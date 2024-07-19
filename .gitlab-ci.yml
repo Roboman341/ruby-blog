@@ -1,0 +1,22 @@
+stages:
+  - build
+  - deploy
+
+before_script:
+  - gcloud container clusters get-credentials testday --zone europe-west1 --project testday
+
+variables:
+  REGISTRY_PATH: ${CI_GCP_REGION}-docker.pkg.dev/testday/${CI_PROJECT_NAME}/blog
+
+build_image:
+  stage: build
+  image: "gcr.io/superlocal-149713/gcloud-builder:v193.0.0-alpine"
+  tags:
+  - kubernetes
+
+deploy_chartr:
+  stage: deploy
+  image: "gcr.io/gitlab-194411/k8s-deployer:latest"
+  tags:
+  - kubernetes
+
