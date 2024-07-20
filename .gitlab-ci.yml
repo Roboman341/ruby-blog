@@ -1,5 +1,6 @@
 stages:
-  - build
+  - app-build
+  - helm
   - deploy
 
 before_script:
