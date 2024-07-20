@@ -11,7 +11,6 @@ services:
     - "5433:${PGPORT}"
   web:
     build: .
-    command: sh -c "bin/rails db:create && bin/rails db:migrate && bin/rails server -b 0.0.0.0"
     volumes:
       - .:/myapp
     ports:
