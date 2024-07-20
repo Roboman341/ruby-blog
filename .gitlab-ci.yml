@@ -21,8 +21,3 @@ build:
     - docker tag europe-central2-docker.pkg.dev/testday-project/main/$(basename CI_PROJECT_URL .git):latest
     - docker push europe-central2-docker.pkg.dev/testday-project/main/$(basename CI_PROJECT_URL .git):$CI_PIPELINE_ID
     - docker push europe-central2-docker.pkg.dev/testday-project/main/$(basename CI_PROJECT_URL .git):latest
-
-deploy_chartr:
-  stage: deploy
-  image: "gcr.io/gitlab-194411/k8s-deployer:latest"
-
