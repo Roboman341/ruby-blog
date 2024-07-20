@@ -6,20 +6,24 @@ stages:
 default:
   image: gcr.io/cloud-builders/docker
 
-before_script:
-  - echo $GCLOUD_SERVICE_KEY | base64 --decode -i > $CI_PROJECT_DIR/gcloud-service-key.json
-  - gcloud auth activate-service-account --key-file=$CI_PROJECT_DIR/gcloud-service-key.json
-  - gcloud config set project $PROJECT_ID
+# before_script:
+#   - echo $GCLOUD_SERVICE_KEY | base64 --decode -i > $CI_PROJECT_DIR/gcloud-service-key.json
+#   - gcloud auth activate-service-account --key-file=$CI_PROJECT_DIR/gcloud-service-key.json
+#   - gcloud config set project $PROJECT_ID
 
 variables:
-  REGISTRY_PATH: ${CI_GCP_REGION}-docker.pkg.dev/testday/${CI_PROJECT_NAME}/blog
+  REGISTRY_PATH: europe-central2-docker.pkg.dev/testday-project/main/$(basename CI_PROJECT_URL .git)
   PROJECT_ID: testday-project
 
 build:
   stage: build
   script:
-    - docker build -t $(basename CI_PROJECT_URL .git):$CI_PIPELINE_ID .
-    - docker tag europe-central2-docker.pkg.dev/testday-project/main/$(basename CI_PROJECT_URL .git):$CI_PIPELINE_ID
-    - docker tag europe-central2-docker.pkg.dev/testday-project/main/$(basename CI_PROJECT_URL .git):latest
-    - docker push europe-central2-docker.pkg.dev/testday-project/main/$(basename CI_PROJECT_URL .git):$CI_PIPELINE_ID
-    - docker push europe-central2-docker.pkg.dev/testday-project/main/$(basename CI_PROJECT_URL .git):latest
+    - build -t ${REGISTRY_PATH} .
+    - gcloud builds submit --tag ${REGISTRY_PATH}
+    - push ${REGISTRY_PATH}:latest
+
+    # - docker build -t $(basename CI_PROJECT_URL .git):$CI_PIPELINE_ID .
+    # - docker tag europe-central2-docker.pkg.dev/testday-project/main/$(basename CI_PROJECT_URL .git):$CI_PIPELINE_ID
+    # - docker tag europe-central2-docker.pkg.dev/testday-project/main/$(basename CI_PROJECT_URL .git):latest
+    # - docker push europe-central2-docker.pkg.dev/testday-project/main/$(basename CI_PROJECT_URL .git):$CI_PIPELINE_ID
+    # - docker push europe-central2-docker.pkg.dev/testday-project/main/$(basename CI_PROJECT_URL .git):latest
