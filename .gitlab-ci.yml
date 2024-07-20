@@ -3,6 +3,9 @@ stages:
   - helm
   - deploy
 
+default:
+  image: gcr.io/cloud-builders/docker
+
 before_script:
   - echo $GCLOUD_SERVICE_KEY | base64 --decode -i > $CI_PROJECT_DIR/gcloud-service-key.json
   - gcloud auth activate-service-account --key-file=$CI_PROJECT_DIR/gcloud-service-key.json
@@ -14,7 +17,6 @@ variables:
 
 build:
   stage: build
-  image: gcr.io/cloud-builders/docker
   script:
     - docker build -t $(basename CI_PROJECT_URL .git):$CI_PIPELINE_ID .
     - docker tag europe-central2-docker.pkg.dev/testday-project/main/$(basename CI_PROJECT_URL .git):$CI_PIPELINE_ID
