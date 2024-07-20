@@ -5,6 +5,7 @@
 #   git config --global core.excludesfile '~/.gitignore_global'
 
 .env
+gcloud-service-key.json
 
 # Ignore bundler config.
 /.bundle

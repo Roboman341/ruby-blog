@@ -1,23 +1,28 @@
 stages:
-  - app-build
+  - build
   - helm
   - deploy
 
 before_script:
-  - gcloud container clusters get-credentials testday --zone europe-west1 --project testday
+  - echo $GCLOUD_SERVICE_KEY | base64 --decode -i > $CI_PROJECT_DIR/gcloud-service-key.json
+  - gcloud auth activate-service-account --key-file=$CI_PROJECT_DIR/gcloud-service-key.json
+  - gcloud config set project $PROJECT_ID
 
 variables:
   REGISTRY_PATH: ${CI_GCP_REGION}-docker.pkg.dev/testday/${CI_PROJECT_NAME}/blog
+  PROJECT_ID: testday-project
 
-build_image:
+build:
   stage: build
-  image: "gcr.io/superlocal-149713/gcloud-builder:v193.0.0-alpine"
-  tags:
-  - kubernetes
+  image: gcr.io/cloud-builders/docker
+  script:
+    - docker build -t $(basename CI_PROJECT_URL .git):$CI_PIPELINE_ID .
+    - docker tag europe-central2-docker.pkg.dev/testday-project/main/$(basename CI_PROJECT_URL .git):$CI_PIPELINE_ID
+    - docker tag europe-central2-docker.pkg.dev/testday-project/main/$(basename CI_PROJECT_URL .git):latest
+    - docker push europe-central2-docker.pkg.dev/testday-project/main/$(basename CI_PROJECT_URL .git):$CI_PIPELINE_ID
+    - docker push europe-central2-docker.pkg.dev/testday-project/main/$(basename CI_PROJECT_URL .git):latest
 
 deploy_chartr:
   stage: deploy
   image: "gcr.io/gitlab-194411/k8s-deployer:latest"
-  tags:
-  - kubernetes
 
