@@ -4,7 +4,7 @@ image:
   repository: europe-central2-docker.pkg.dev/testday-project/main
   pullPolicy: IfNotPresent
   name: ruby-blog
-  tag: 3.1.0
+  tag: 3.3.0
 
 imagePullSecrets: []
 nameOverride: ""
@@ -38,20 +38,20 @@ domain:
 
 resources:
   limits:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 200m
+    memory: 200Mi
   requests:
     cpu: 100m
     memory: 128Mi
 
-livenessProbe:
-  httpGet:
-    path: /
-    port: 3000
 readinessProbe:
-  httpGet:
-    path: /
-    port: 3000
+  path: /
+  initialDelaySeconds: 10
+  periodSeconds: 15
+livenessProbe:
+  path: /
+  initialDelaySeconds: 5
+  periodSeconds: 15
 
 autoscaling:
   enabled: true

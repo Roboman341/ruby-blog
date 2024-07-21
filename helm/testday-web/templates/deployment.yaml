@@ -11,6 +11,8 @@ spec:
     metadata:
       labels:
         app: {{ .Values.labels.app }}
+      annotations:
+        timestamp: "{{ date "20060102150405" .Release.Time }}"
     spec:
       containers:
       - name: {{ .Values.labels.app }}
@@ -21,6 +23,10 @@ spec:
             protocol: TCP
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "bin/rails db:create && bin/rails db:migrate"]
         env:
         - name: POSTGRES_USER
           valueFrom:
@@ -39,6 +45,8 @@ spec:
               key: DEV_DB_NAME
         - name: POSTGRES_HOST
           value: {{ .Values.psql.host }}
+        - name: APP_NAME
+          value: {{ .Values.labels.app }}
         - name: PGPORT
           value: "{{ .Values.psql.port }}"
         - name: SECRET_KEY_BASE
@@ -46,15 +54,20 @@ spec:
             secretKeyRef:
               name: psql
               key: SECRET_KEY_BASE
+        - name: NEW_RELIC_LICENSE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: psql
+              key: NEW_RELIC_LICENSE_KEY
         readinessProbe:
           httpGet:
-            path: /
-            port: 3000
-          initialDelaySeconds: 20
-          periodSeconds: 10
+            path: {{ .Values.readinessProbe.path }}
+            port: {{ .Values.service.targetPort }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
         livenessProbe:
           httpGet:
-            path: /
-            port: 3000
-          initialDelaySeconds: 10
-          periodSeconds: 15
+            path: {{ .Values.livenessProbe.path }}
+            port: {{ .Values.service.targetPort }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}

@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 
 ruby "3.1.4"
+gem 'newrelic_rpm'
 
 gem 'pg', '1.5.6' #TODO: added for psql
 
