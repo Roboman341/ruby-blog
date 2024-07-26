@@ -3,7 +3,7 @@ source "https://rubygems.org"
 ruby "3.1.4"
 gem 'newrelic_rpm'
 
-gem 'pg', '1.5.6' #TODO: added for psql
+gem 'pg', '1.5.6'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.1.3", ">= 7.1.3.4"

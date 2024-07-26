@@ -11,12 +11,13 @@ services:
     - "5433:${PGPORT}"
   web:
     build: .
+    command: /bin/sh -c "bin/rails db:create && bin/rails db:migrate && bin/rails server -b '0.0.0.0'"
     volumes:
       - .:/myapp
     ports:
       - "3000:3000"
     depends_on:
-      - postgresql
+      - postgresql #TODO: should be the same as service: postgresql and .env value
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${PGPORT}/${DEV_DB_NAME}
       POSTGRES_USER: ${POSTGRES_USER}

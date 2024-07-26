@@ -1,30 +1,13 @@
 replicaCount: 1
 
 image:
-  repository: europe-central2-docker.pkg.dev/testday-project/main
+  repository: europe-west1-docker.pkg.dev/dev1/dev
   pullPolicy: IfNotPresent
   name: ruby-blog
   tag: 3.3.0
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Automatically mount a ServiceAccount's API credentials?
-  automount: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
-
-podAnnotations: {}
-
 labels:
-  app: testday-web
+  app: web
 
 namespace: default
 
@@ -32,9 +15,6 @@ service:
   type: LoadBalancer
   port: 80
   targetPort: 3000
-
-domain:
-  name: testday
 
 resources:
   limits:
@@ -59,12 +39,6 @@ autoscaling:
   maxReplicas: 1
   targetCPUUtilizationPercentage: 60
   targetMemoryUtilizationPercentage: 60
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
 
 securityContext: 
   runAsNonRoot: true
