@@ -2,17 +2,16 @@ replicaCount: 1
 
 image:
   repository: europe-west1-docker.pkg.dev/dev1/dev
-  pullPolicy: IfNotPresent
-  name: ruby-blog
-  tag: 3.3.0
+  pullPolicy: Always #TODO: to update the image each time due to absence of proper versioning
+  name: ruby-on-rails-blog
+  tag: latest
 
 labels:
-  app: web
+  app: ruby-on-rails-blog-web
 
-namespace: default
+namespace: dev1
 
 service:
-  type: LoadBalancer
   port: 80
   targetPort: 3000
 
@@ -49,4 +48,9 @@ securityContext:
 
 psql:
   port: 5432
-  host: postgresql-dev3.default.svc.cluster.local
+  host: 10.100.64.3
+
+ingress:
+  enabled: true
+  staticIPName: "ruby-blog-dev"
+  hostname: "rails-blog.testing.dev"

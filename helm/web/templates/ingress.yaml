@@ -1,0 +1,17 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.labels.app }}
+  namespace: {{ .Values.namespace }}
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.global-static-ip-name: {{ .Values.ingress.staticIPName }}
+    networking.gke.io/managed-certificates: {{ .Values.labels.app }}
+spec:
+  defaultBackend:
+    service:
+      name: {{ .Values.labels.app }}
+      port:
+        number: {{ .Values.service.port }}
+{{- end -}}

@@ -1,0 +1,14 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+  - 'build'
+  - '--tag=europe-west1-docker.pkg.dev/dev1/dev/ruby-on-rails-blog:latest'
+  - '--tag=gcr.io/$PROJECT_ID/gcloud'
+  - '-f'
+  - 'Dockerfile'
+  - '.'
+
+images:
+- 'europe-west1-docker.pkg.dev/dev1/dev/ruby-on-rails-blog:latest'
+
+timeout: 2400s

@@ -4,15 +4,12 @@
 # or operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile '~/.gitignore_global'
 
-.env
-gcloud-service-key.json
-
 # Ignore bundler config.
 /.bundle
 
-# Ignore all environment files (except templates).
-/.env*
-!/.env*.erb
+# Ignore the default SQLite database.
+/db/*.sqlite3
+/db/*.sqlite3-*
 
 # Ignore all logfiles and tempfiles.
 /log/*
@@ -25,7 +22,7 @@ gcloud-service-key.json
 !/tmp/pids/
 !/tmp/pids/.keep
 
-# Ignore storage (uploaded files in development and any SQLite databases).
+# Ignore uploaded files in development.
 /storage/*
 !/storage/.keep
 /tmp/storage/*
@@ -36,3 +33,5 @@ gcloud-service-key.json
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+.env

@@ -1,0 +1,45 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  PROJECT_ID: "test-day-1007"
+  NAMESPACE: "dev1"
+  CLUSTER_NAME: "cluster-dev1"
+  CLUSTER_ZONE: "europe-west1-c"
+
+build_image:
+  stage: build
+  image: "gcr.io/google.com/cloudsdktool/cloud-sdk:alpine"
+  tags:
+  - kubernetes
+  script:
+    - gcloud config set project $PROJECT_ID
+    - gcloud builds submit . --config="cloudbuild.yaml"
+  rules:
+      - if: $CI_PIPELINE_SOURCE == "push"
+        changes:
+          paths:
+            - app/**/*
+            - bin/**/*
+            - config/**/*
+            - db/**/*
+            - lib/**/*
+            - log/**/*
+            - public/**/*
+            - storage/**/*
+            - test/**/*
+            - tmp/**/*
+            - vendor/**/*
+            - Gemfile
+            - Rakefile
+      - if: '$CI_PIPELINE_SOURCE == "web"'
+deploy_chart:
+  stage: deploy
+  image: "gcr.io/gitlab-194411/k8s-deployer:latest"
+  tags:
+  - kubernetes
+  script:
+    - gcloud container clusters get-credentials $CLUSTER_NAME --zone $CLUSTER_ZONE --project $PROJECT_ID
+    - helm upgrade --install web helm/web --namespace $NAMESPACE --set image.tag=latest #TODO: update once versioning is configured
+
